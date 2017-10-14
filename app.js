@@ -25,7 +25,7 @@ var BodyTypeLabels = ["athletic","skinny", "hourglass","pear","curvy"];
 var Bodytype = "";
 var SkinToneLabels = ["fair","mocha", "olive","dark"];
 var SkinTone = "";
-var BudgetRangeLabel=["<$30"]
+var BudgetRangeLabel=["<$60"]
 var dresses = readJSON();
 console.log(dresses.items.dresses[1]);
 
@@ -48,18 +48,18 @@ var bot = new builder.UniversalBot(connector, [
     },
     function (session, result) {
         Bodytype = result.response.entity;
-        session.send("You selected " + Bodytype);
+        session.send(Bodytype + ": Ooo sweet !");
         builder.Prompts.choice(session, "What's your skin tone?", SkinToneLabels);
     },
     function (session, result) {
         SkinTone = result.response.entity;
-        session.send("You selected " + SkinTone);
+        session.send( SkinTone + ". naaaice! I love your skintone");
         builder.Prompts.choice(session, "What's the budget you are looking for?", BudgetRangeLabel);    
     },
 
     function (session, result) {
         BudgetRangeLabel = result.response.entity;
-        session.send("You selected budget range of  " + BudgetRangeLabel);
+        session.send("Ok.. i am going to find something in your budget now...");
         var  matchDressCard = matchDress(Occasion,Bodytype,SkinTone);
         var dressCard =matchDressCard.map(function(dress){
             return getdressCard(session, dress);
@@ -140,9 +140,11 @@ function matchDress(occassion,skintone,bodytype) {
         var score=calculateScore(dress,occassion,skintone,bodytype);
         if (score ==dressScoreMatch){
             result.push(dress);
+            dressScoreMatch=score;
         }else if (score >dressScoreMatch)
         {
             result=[dress];
+              dressScoreMatch=score;
         }
 
     }
