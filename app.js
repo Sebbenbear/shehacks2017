@@ -31,19 +31,19 @@ console.log(dresses.items.dresses[1]);
 
 var bot = new builder.UniversalBot(connector, [
     function (session) {
-        session.send('WELCOME TO STYLOSHEBOT')
+        session.send('Hey there! Im StyloSHEbot. Your personal fashion adviser');
         builder.Prompts.choice(session, "What are you looking for?", LookingForLabels);
 
     },
     function (session, result) {
         console.log(result);
         LookingFor = result.response.entity;
-        session.send("You selected " + LookingFor);
+        session.send( LookingFor + " hmm sexy!");
         builder.Prompts.choice(session, "What's the occassion?", OccasionLabels);
     },
     function (session, result) {
         Occasion = result.response.entity;
-        session.send("you selected " + Occasion);
+        session.send(Occasion + " yeah! Woohoo <3");
         builder.Prompts.choice(session, "What's your body type?", BodyTypeLabels);
     },
     function (session, result) {
