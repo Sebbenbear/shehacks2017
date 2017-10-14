@@ -1,0 +1,29 @@
+{
+	"items": {
+		"dresses": [{
+			"img_url": "https://i.pinimg.com/736x/e3/e3/b8/e3e3b805e30f9b71ba6434909849eb80--hoco-dresses-a-line-dresses.jpg",
+			"description": "lace a-line",
+			"color": "black",
+			"dress_color_tones": ["cool", "warm"],
+			"occasions": ["wedding", "formal"],
+			"body_types": ["pear", "apple", "curvy"],
+			"cost": "40.00"
+		}, {
+			"img_url": "http://www.acetshirt.com/wp-content/uploads/2017/07/blue-denim-round-neck-short-sleeve-casual-dress-loading-oanrwaj-.jpg",
+			"description": "casual a-line",
+			"color": "blue",
+			"dress_color_tones": ["cool"],
+			"occasions": ["casual"],
+			"body_types": ["skinny", "athletic"],
+			"cost": "23.00"
+		}, {
+			"img_url": "https://i.pinimg.com/736x/98/e2/c8/98e2c87f7fd1face939edaff6bc609cc--cute-dress-outfit-shoulder-dress-outfit.jpg",
+			"description": "casual a-line",
+			"color": "green",
+			"dress_color_tones": ["warm"],
+			"occasions": ["business casual"],
+			"body_types": ["hourglass", "curvy"],
+			"cost": "110.00"
+		}]
+	}
+}
