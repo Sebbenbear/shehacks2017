@@ -26,7 +26,8 @@ var Bodytype = "";
 var SkinToneLabels = ["fair","mocha", "olive","dark"];
 var SkinTone = "";
 var BudgetRangeLabel=["<$30"]
-
+var dresses = readJSON();
+console.log(dresses.items.dresses[1]);
 
 var bot = new builder.UniversalBot(connector, [
     function (session) {
@@ -37,7 +38,7 @@ var bot = new builder.UniversalBot(connector, [
     function (session, result) {
         console.log(result);
         LookingFor = result.response.entity;
-        session.send("you selected " + LookingFor);
+        session.send("You selected " + LookingFor);
         builder.Prompts.choice(session, "What's the occassion?", OccasionLabels);
     },
     function (session, result) {
@@ -47,23 +48,30 @@ var bot = new builder.UniversalBot(connector, [
     },
     function (session, result) {
         Bodytype = result.response.entity;
-        session.send("you selected " + Bodytype);
+        session.send("You selected " + Bodytype);
         builder.Prompts.choice(session, "What's your skin tone?", SkinToneLabels);
     },
     function (session, result) {
         SkinTone = result.response.entity;
-        session.send("you selected " + SkinTone);
-        builder.Prompts.choice(session, "What's the budget you are looking for?", BudgetRangeLabel);
-        var cards = [getdressCard(session, {}), getdressCard(session, {})];
+        session.send("You selected " + SkinTone);
+        builder.Prompts.choice(session, "What's the budget you are looking for?", BudgetRangeLabel);    
+    },
 
-        // create reply with Carousel AttachmentLayout
-        var reply = new builder.Message(session)
-            .attachmentLayout(builder.AttachmentLayout.carousel)
-            .attachments(cards);
-
-        session.send(reply);
-
-
+    function (session, result) {
+        BudgetRangeLabel = result.response.entity;
+        session.send("You selected budget range of  " + BudgetRangeLabel);
+        var  matchDressCard = matchDress(Occasion,Bodytype,SkinTone);
+        var dressCard =matchDressCard.map(function(dress){
+            return getdressCard(session, dress);
+        });
+        session.send("There you go,here are the choices that's matching the selected criteria  ");
+        //var cards = [getdressCard(session, {})];
+        
+                // create reply with Carousel AttachmentLayout
+                var reply = new builder.Message(session)
+                    .attachmentLayout(builder.AttachmentLayout.carousel)
+                    .attachments(dressCard);       
+                session.send(reply);
         //builder.Prompts.choice(session, "What's your skin tone?", SkinToneLabels);
         //session.endDialog();
     }
@@ -71,14 +79,14 @@ var bot = new builder.UniversalBot(connector, [
 
 function getdressCard(session, dress) {
     var card = new builder.HeroCard(session)
-        .title('Azure Storage')
-        .subtitle('Offload the heavy lifting of data center management')
-        .text('Store and help protect your data. Get durable, highly available data storage across the globe and pay only for what you use.')
+        .title(dress.description)
+       // .subtitle(dress.description)
+       // .text('Here are the matching dresses we found')
         .images([
-            builder.CardImage.create(session, 'https://docs.microsoft.com/en-us/azure/storage/media/storage-introduction/storage-concepts.png')
+            builder.CardImage.create(session, dress.img_url)
         ])
         .buttons([
-            builder.CardAction.openUrl(session, 'https://azure.microsoft.com/en-us/services/storage/', 'Learn More')
+            builder.CardAction.openUrl(session, dress.img_url, 'Learn More')
         ]);
 
     return card;
@@ -88,22 +96,61 @@ function getdressCard(session, dress) {
 
 
 
-function readJSON(session, dress) {
-    var card = new builder.HeroCard(session)
-        .title('Azure Storage')
-        .subtitle('Offload the heavy lifting of data center management')
-        .text('Store and help protect your data. Get durable, highly available data storage across the globe and pay only for what you use.')
-        .images([
-            builder.CardImage.create(session, 'https://docs.microsoft.com/en-us/azure/storage/media/storage-introduction/storage-concepts.png')
-        ])
-        .buttons([
-            builder.CardAction.openUrl(session, 'https://azure.microsoft.com/en-us/services/storage/', 'Learn More')
-        ]);
+function readJSON() {
+    var fs = require('fs');
+    var obj = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+    var jsonObj =require('./data.json');
+    return jsonObj;
+}
 
-    return card;
 
+
+function calculateScore(dress,occassion,skintone,bodytype) {
+    var score =0;
+    console.log(dress);
+        if (dress.occasions.includes(occassion)){
+            console.log("matches");
+            score =score+1;
+        }
+   
+        if (dress.dress_color_tones.includes(skintone)){
+            console.log("matches");
+            score =score+1;
+        }
+        if (dress.body_types.includes(bodytype)){
+            console.log("matches");
+            score =score+1;
+        }
+        return score;
 
 }
+
+
+
+function matchDress(occassion,skintone,bodytype) {
+    result=[];
+    var dressScoreMatch =0;
+    var dressarray=dresses.items.dresses;
+    var length =dressarray.length;
+    console.log("We are inmatchdress")
+    console.log(dressarray);
+    
+    for (i=0;i<length;i++){
+       dress= dressarray[i];
+        var score=calculateScore(dress,occassion,skintone,bodytype);
+        if (score ==dressScoreMatch){
+            result.push(dress);
+        }else if (score >dressScoreMatch)
+        {
+            result=[dress];
+        }
+
+    }
+    return result;
+
+}
+
+
 
 
 
